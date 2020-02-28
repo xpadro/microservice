@@ -15,7 +15,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceImplTest {
@@ -29,7 +29,7 @@ class BookServiceImplTest {
     private List<Book> books = asList(new Book("title1", 2019, "author1"), new Book("title2", 2020, "author2"));
 
     @Test
-    void findAllShouldReturnAllBooks() {
+    void shouldReturnAllBooks() {
         when(bookRepository.findAll()).thenReturn(books);
 
         List<Book> result = bookService.findAll();
@@ -37,7 +37,7 @@ class BookServiceImplTest {
     }
 
     @Test
-    void findShouldReturnTheRequestedBookIfFound() {
+    void shouldReturnTheRequestedBookIfFound() {
         when(bookRepository.findById(1L)).thenReturn(Optional.of(new Book(BOOK_TITLE, 2020, "an author")));
 
         Book result = bookService.find(1L);
@@ -46,9 +46,17 @@ class BookServiceImplTest {
     }
 
     @Test
-    void findShouldRaiseExceptionIfNotFound() {
+    void shouldRaiseExceptionIfNotFound() {
         when(bookRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(BookNotFoundException.class, () -> bookService.find(1L));
+    }
+
+    @Test
+    public void shouldSaveANewBook() {
+        Book book = new Book("test title", 1980, "test author");
+        bookService.save(book);
+
+        verify(bookRepository.save(book), times(1));
     }
 }

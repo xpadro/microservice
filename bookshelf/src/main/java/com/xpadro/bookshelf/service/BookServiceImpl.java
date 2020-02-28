@@ -32,4 +32,9 @@ public class BookServiceImpl implements BookService {
 
         throw new BookNotFoundException(String.format("Book with Id %d not found", id));
     }
+
+    @Override
+    public Book save(Book book) {
+        return bookRepository.save(book);
+    }
 }
