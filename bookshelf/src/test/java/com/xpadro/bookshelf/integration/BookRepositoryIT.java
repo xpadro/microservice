@@ -16,12 +16,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MySQLContainerProvider;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ContextConfiguration(initializers = BookRepositoryIT.Initializer.class)
 @SpringBootTest(classes = BookshelfApplication.class)
@@ -71,4 +73,17 @@ public class BookRepositoryIT {
         }
     }
 
+    @Test
+    public void shouldNotAllowShortTitles() {
+        Book book = new Book("a", 2010, "test author");
+
+        assertThrows(ConstraintViolationException.class, () -> repository.save(book));
+    }
+
+    @Test
+    public void shouldNotAllowShortAuthors() {
+        Book book = new Book("test title", 2010, "a");
+
+        assertThrows(ConstraintViolationException.class, () -> repository.save(book));
+    }
 }

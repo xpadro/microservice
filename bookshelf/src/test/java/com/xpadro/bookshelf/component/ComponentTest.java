@@ -78,4 +78,14 @@ public class ComponentTest {
             assertThat(savedBook.get().getTitle(), equalTo(newBook.getTitle()));
         }
     }
+
+    @Test
+    public void shouldNotCreateBookWithShortTitle() throws Exception {
+        Book newBook = new Book("a", 1990, "test author");
+
+        mockMvc.perform(post("/books")
+                .content(objectMapper.writeValueAsString(newBook))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }

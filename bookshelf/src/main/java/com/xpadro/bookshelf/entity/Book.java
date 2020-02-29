@@ -4,14 +4,23 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Min(value = 2, message = "Title should have at least 2 characters")
     private String title;
+
     private int year;
+
+    @NotNull
+    @Min(value = 2, message = "Title should have at least 2 characters")
     private String author;
 
     public Book() {
