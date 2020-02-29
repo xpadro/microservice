@@ -56,12 +56,13 @@ public class ComponentTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
+        assertThat(mvcResult.getResponse().getHeader("location"), equalTo("http://localhost/books/5"));
+
         Optional<Book> savedBook = bookRepository.findById(5L);
         if (!savedBook.isPresent()) {
             fail("book should be saved");
         } else {
             assertThat(savedBook.get().getTitle(), equalTo(newBook.getTitle()));
-            assertThat(mvcResult.getResponse().getHeader("location"), equalTo("http://localhost/books/5"));
         }
     }
 }
