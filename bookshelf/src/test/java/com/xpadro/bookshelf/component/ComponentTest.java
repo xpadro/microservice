@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,6 +46,18 @@ public class ComponentTest {
         Book result = objectMapper.readValue(contentAsString, Book.class);
 
         assertThat(result.getTitle(), equalTo("The Lord of the Rings"));
+    }
+
+    @Test
+    public void shouldReturnAllBooks() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/books"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        List<?> result = objectMapper.readValue(contentAsString, List.class);
+
+        assertThat(result.size(), equalTo(4));
     }
 
     @Test

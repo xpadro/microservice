@@ -57,6 +57,6 @@ class BookServiceImplTest {
         Book book = new Book("test title", 1980, "test author");
         bookService.save(book);
 
-        verify(bookRepository.save(book), times(1));
+        verify(bookRepository, times(1)).save(book);
     }
 }
