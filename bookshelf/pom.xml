@@ -41,6 +41,12 @@
 			<version>2.9.2</version>
 		</dependency>
 
+		<!-- Monitoring -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
 
 		<!-- Database -->
 		<dependency>
