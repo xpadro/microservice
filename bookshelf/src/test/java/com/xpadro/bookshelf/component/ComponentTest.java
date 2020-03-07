@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = BookshelfApplication.class)
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
+@Sql(scripts = "/sql/h2_init.sql")
 public class ComponentTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -57,7 +59,7 @@ public class ComponentTest {
         String contentAsString = mvcResult.getResponse().getContentAsString();
         List<?> result = objectMapper.readValue(contentAsString, List.class);
 
-        assertThat(result.size(), equalTo(4));
+        assertThat(result.size(), equalTo(3));
     }
 
     @Test
@@ -69,9 +71,9 @@ public class ComponentTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getHeader("location"), equalTo("http://localhost/books/5"));
+        assertThat(mvcResult.getResponse().getHeader("location"), equalTo("http://localhost/books/4"));
 
-        Optional<Book> savedBook = bookRepository.findById(5L);
+        Optional<Book> savedBook = bookRepository.findById(4L);
         if (!savedBook.isPresent()) {
             fail("book should be saved");
         } else {

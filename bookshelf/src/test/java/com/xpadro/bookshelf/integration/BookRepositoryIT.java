@@ -37,9 +37,10 @@ public class BookRepositoryIT {
     @ClassRule
     public static final JdbcDatabaseContainer<?> mySQLContainer = new MySQLContainerProvider()
             .newInstance()
-            .withDatabaseName("database-integration-test")
+            .withDatabaseName("database_integration_test")
             .withUsername("testuser")
-            .withPassword("testpwd");
+            .withPassword("testpwd")
+            .withInitScript("sql/testcontainers_init.sql");
 
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
@@ -56,7 +57,7 @@ public class BookRepositoryIT {
     public void shouldFindBooks() {
         List<Book> result = repository.findAll();
 
-        assertThat(result.size(), equalTo(4));
+        assertThat(result.size(), equalTo(3));
     }
 
     @Test
@@ -64,7 +65,7 @@ public class BookRepositoryIT {
         Book book = new Book("test title", 2010, "test author");
         repository.save(book);
 
-        Optional<Book> result = repository.findById(5L);
+        Optional<Book> result = repository.findById(4L);
 
         if (!result.isPresent()) {
             fail("book should be created");
