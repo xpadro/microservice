@@ -64,7 +64,7 @@ public class ComponentTest {
 
     @Test
     public void shouldCreateANewBook() throws Exception {
-        Book newBook = new Book("test title", 1990, "test author");
+        Book newBook = new Book("test book 6", 1990, "test author", "1234567890126");
         MvcResult mvcResult = mockMvc.perform(post("/books")
                 .content(objectMapper.writeValueAsString(newBook))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -83,7 +83,27 @@ public class ComponentTest {
 
     @Test
     public void shouldNotCreateBookWithShortTitle() throws Exception {
-        Book newBook = new Book("a", 1990, "test author");
+        Book newBook = new Book("a", 1990, "test author", "1234567890123");
+
+        mockMvc.perform(post("/books")
+                .content(objectMapper.writeValueAsString(newBook))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotCreateBookWithShortIsbn() throws Exception {
+        Book newBook = new Book("test title", 1990, "test author", "1234567");
+
+        mockMvc.perform(post("/books")
+                .content(objectMapper.writeValueAsString(newBook))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotCreateBookWithLargeIsbn() throws Exception {
+        Book newBook = new Book("test title", 1990, "test author", "1234567890123456");
 
         mockMvc.perform(post("/books")
                 .content(objectMapper.writeValueAsString(newBook))

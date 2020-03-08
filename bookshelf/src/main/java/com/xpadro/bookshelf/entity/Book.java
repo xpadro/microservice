@@ -20,16 +20,21 @@ public class Book {
     private int year;
 
     @NotNull
-    @Size(min = 2, message = "Title should have at least 2 characters")
+    @Size(min = 2, message = "Author should have at least 2 characters")
     private String author;
+
+    @NotNull
+    @Size(min = 13, max = 13, message = "ISBN must have a length of 13 characters")
+    private String isbn;
 
     public Book() {
     }
 
-    public Book(String title, int year, String author) {
+    public Book(String title, int year, String author, String isbn) {
         this.title = title;
         this.year = year;
         this.author = author;
+        this.isbn = isbn;
     }
 
     public Long getId() {
@@ -64,12 +69,21 @@ public class Book {
         this.author = author;
     }
 
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
                 "title='" + title + '\'' +
                 ", year=" + year +
                 ", author='" + author + '\'' +
+                ", isbn='" + isbn + '\'' +
                 '}';
     }
 }

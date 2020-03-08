@@ -26,7 +26,9 @@ class BookServiceImplTest {
 
     @InjectMocks
     private BookServiceImpl bookService;
-    private List<Book> books = asList(new Book("title1", 2019, "author1"), new Book("title2", 2020, "author2"));
+    private List<Book> books = asList(
+            new Book("title1", 2019, "author1", "1234567890123"),
+            new Book("title2", 2020, "author2", "1234567890124"));
 
     @Test
     void shouldReturnAllBooks() {
@@ -38,7 +40,7 @@ class BookServiceImplTest {
 
     @Test
     void shouldReturnTheRequestedBookIfFound() {
-        when(bookRepository.findById(1L)).thenReturn(Optional.of(new Book(BOOK_TITLE, 2020, "an author")));
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(new Book(BOOK_TITLE, 2020, "an author", "1234567890123")));
 
         Book result = bookService.find(1L);
 
@@ -54,7 +56,7 @@ class BookServiceImplTest {
 
     @Test
     public void shouldSaveANewBook() {
-        Book book = new Book("test title", 1980, "test author");
+        Book book = new Book("test title", 1980, "test author", "1234567890125");
         bookService.save(book);
 
         verify(bookRepository, times(1)).save(book);
