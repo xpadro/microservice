@@ -28,7 +28,7 @@ public class RentalServiceImplTest {
     public void shouldRentABook() {
         when(repository.save(any(Rental.class))).thenReturn(rental);
 
-        Rental result = service.rentBook(rental.getUserId(), rental.getIsbn());
+        Rental result = service.rentBook(rental);
 
         assertThat(result.getUserId(), equalTo(rental.getUserId()));
         assertThat(result.getIsbn(), equalTo(rental.getIsbn()));

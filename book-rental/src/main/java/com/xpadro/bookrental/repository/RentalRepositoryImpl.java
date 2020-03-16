@@ -5,6 +5,7 @@ import com.xpadro.bookrental.entity.Rental;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -27,13 +28,12 @@ public class RentalRepositoryImpl implements RentalRepositoryCustom {
         Root<Rental> rentalRoot = query.from(Rental.class);
         query.select(rentalRoot).where(builder.equal(rentalRoot.get("userId"), rental.getUserId()));
 
-        Rental result = em.createQuery(query).getSingleResult();
-
-        if (result != null) {
+        try {
+            Rental result = em.createQuery(query).getSingleResult();
             throw new UserAlreadyRentedException(format("User %s already rented book %s", result.getUserId(), result.getIsbn()));
+        } catch (NoResultException e) {
+            em.persist(rental);
+            return rental;
         }
-
-        em.persist(rental);
-        return rental;
     }
 }
