@@ -1,6 +1,7 @@
 package com.xpadro.bookrental.integration;
 
 import com.xpadro.bookrental.BookRentalApplication;
+import com.xpadro.bookrental.UserAlreadyRentedException;
 import com.xpadro.bookrental.entity.Rental;
 import com.xpadro.bookrental.repository.RentalRepository;
 import org.junit.ClassRule;
@@ -11,14 +12,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MySQLContainerProvider;
 
+import java.util.Optional;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(initializers = RentalRepositoryIT.Initializer.class)
 @SpringBootTest(classes = BookRentalApplication.class)
@@ -55,12 +58,15 @@ public class RentalRepositoryIT {
 
         assertThat(result.getIsbn(), equalTo("1234567890125"));
         assertThat(result.getUserId(), equalTo("user_3"));
+
+        Optional<Rental> savedRental = repository.findById(result.getId());
+        assertTrue(savedRental.isPresent());
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test(expected = UserAlreadyRentedException.class)
     public void shouldNotRentABookIfUserAlreadyRented() {
         Rental rental = new Rental("user_1", "1234567890126");
-        repository.save(rental);
+        repository.rent(rental);
     }
 
 }
