@@ -32,9 +32,4 @@ public class RentalController {
 
         return ResponseEntity.created(location).build();
     }
-
-    @GetMapping()
-    public @ResponseBody String test() {
-        return "Hello";
-    }
 }
