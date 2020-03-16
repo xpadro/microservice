@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS BOOK;
+DROP TABLE IF EXISTS book;
 
-CREATE TABLE IF NOT EXISTS BOOK (
+CREATE TABLE book (
                                     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
                                     title VARCHAR(100) NOT NULL,
                                     year INT NOT NULL,
