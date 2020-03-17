@@ -21,6 +21,7 @@ import java.util.Optional;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,9 +49,9 @@ public class ComponentTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getHeader("location"), equalTo("http://localhost/rentals/3"));
+        assertThat(mvcResult.getResponse().getHeader("location"), equalTo("http://localhost/rentals/user_3"));
 
-        Optional<Rental> savedRental = rentalRepository.findById(3L);
+        Optional<Rental> savedRental = rentalRepository.findByUserId("user_3");
 
         if (!savedRental.isPresent()) {
             fail("rental should be saved");
@@ -67,5 +68,25 @@ public class ComponentTest {
                 .content(objectMapper.writeValueAsString(newRental))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldFindAnExistingRental() throws Exception {
+        MvcResult result = mockMvc.perform(get("/rentals/user_1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        Rental rental = objectMapper.readValue(contentAsString, Rental.class);
+
+        assertThat(rental.getUserId(), equalTo("user_1"));
+    }
+
+    @Test
+    public void shouldNotFindAnUnExistingRental() throws Exception {
+        mockMvc.perform(get("/rentals/user_9")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

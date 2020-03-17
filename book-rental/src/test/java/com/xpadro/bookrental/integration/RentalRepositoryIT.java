@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(initializers = RentalRepositoryIT.Initializer.class)
@@ -67,6 +68,20 @@ public class RentalRepositoryIT {
     public void shouldNotRentABookIfUserAlreadyRented() {
         Rental rental = new Rental("user_1", "1234567890126");
         repository.rent(rental);
+    }
+
+    @Test
+    public void shouldFindTheRequestedRental() {
+        Optional<Rental> result = repository.findByUserId("user_1");
+
+        assertTrue(result.isPresent());
+    }
+
+    @Test
+    public void shouldNotFindAnUnExistingRental() {
+        Optional<Rental> result = repository.findByUserId("user_9");
+
+        assertFalse(result.isPresent());
     }
 
 }

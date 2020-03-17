@@ -5,4 +5,6 @@ import com.xpadro.bookrental.entity.Rental;
 public interface RentalService {
 
     Rental rentBook(Rental rental);
+
+    Rental findRental(String userId);
 }

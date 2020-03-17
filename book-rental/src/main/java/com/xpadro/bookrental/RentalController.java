@@ -27,9 +27,16 @@ public class RentalController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedRental.getId())
+                .buildAndExpand(savedRental.getUserId())
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping(value = "/{userId}")
+    public ResponseEntity<Rental> findRent(@PathVariable String userId) {
+        Rental rental = rentalService.findRental(userId);
+
+        return ResponseEntity.ok(rental);
     }
 }
