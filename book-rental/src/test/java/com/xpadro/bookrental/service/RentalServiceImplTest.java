@@ -1,19 +1,20 @@
 package com.xpadro.bookrental.service;
 
-import com.xpadro.bookrental.RentalNotFoundException;
 import com.xpadro.bookrental.entity.Rental;
 import com.xpadro.bookrental.repository.RentalRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -39,18 +40,20 @@ public class RentalServiceImplTest {
     }
 
     @Test
-    public void shouldFindTheRequestedRental() {
-        when(repository.findByUserId("user_8")).thenReturn(Optional.of(rental));
+    public void shouldFindUserRentals() {
+        when(repository.findByUserId("user_8")).thenReturn(singletonList(rental));
 
-        Rental result = service.findRental("user_8");
+        List<Rental> result = service.findRentals("user_8");
 
-        assertThat(result.getUserId(), equalTo("user_8"));
+        assertThat(result.size(), equalTo(1));
     }
 
     @Test
     public void shouldNotFindAnUnExistingRental() {
-        when(repository.findByUserId("user_8")).thenReturn(Optional.empty());
+        when(repository.findByUserId("user_8")).thenReturn(emptyList());
 
-        Assertions.assertThrows(RentalNotFoundException.class, () -> service.findRental("user_8"));
+        List<Rental> result = service.findRentals("user_8");
+
+        assertTrue(result.isEmpty());
     }
 }

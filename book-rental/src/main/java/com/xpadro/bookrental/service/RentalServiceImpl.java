@@ -1,10 +1,11 @@
 package com.xpadro.bookrental.service;
 
-import com.xpadro.bookrental.RentalNotFoundException;
 import com.xpadro.bookrental.entity.Rental;
 import com.xpadro.bookrental.repository.RentalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RentalServiceImpl implements RentalService {
@@ -22,7 +23,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public Rental findRental(String userId) {
-        return rentalRepository.findByUserId(userId).orElseThrow(RentalNotFoundException::new);
+    public List<Rental> findRentals(String userId) {
+        return rentalRepository.findByUserId(userId);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/rentals")
@@ -34,9 +35,9 @@ public class RentalController {
     }
 
     @GetMapping(value = "/{userId}")
-    public ResponseEntity<Rental> findRent(@PathVariable String userId) {
-        Rental rental = rentalService.findRental(userId);
+    public ResponseEntity<List<Rental>> findUserRentals(@PathVariable String userId) {
+        List<Rental> userRentals = rentalService.findRentals(userId);
 
-        return ResponseEntity.ok(rental);
+        return ResponseEntity.ok(userRentals);
     }
 }

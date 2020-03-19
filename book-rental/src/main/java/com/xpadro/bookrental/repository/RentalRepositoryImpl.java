@@ -1,6 +1,6 @@
 package com.xpadro.bookrental.repository;
 
-import com.xpadro.bookrental.UserAlreadyRentedException;
+import com.xpadro.bookrental.BookAlreadyRentedException;
 import com.xpadro.bookrental.entity.Rental;
 import org.springframework.stereotype.Repository;
 
@@ -26,11 +26,11 @@ public class RentalRepositoryImpl implements RentalRepositoryCustom {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Rental> query = builder.createQuery(Rental.class);
         Root<Rental> rentalRoot = query.from(Rental.class);
-        query.select(rentalRoot).where(builder.equal(rentalRoot.get("userId"), rental.getUserId()));
+        query.select(rentalRoot).where(builder.equal(rentalRoot.get("isbn"), rental.getIsbn()));
 
         try {
             Rental result = em.createQuery(query).getSingleResult();
-            throw new UserAlreadyRentedException(format("User %s already rented book %s", result.getUserId(), result.getIsbn()));
+            throw new BookAlreadyRentedException(format("Book %s already rented by user %s", result.getIsbn(), result.getUserId()));
         } catch (NoResultException e) {
             em.persist(rental);
             return rental;

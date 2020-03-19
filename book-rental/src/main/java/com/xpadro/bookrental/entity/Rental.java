@@ -15,6 +15,7 @@ public class Rental {
     @Size(min = 13, max = 13, message = "ISBN must have a length of 13 characters")
     private String isbn;
 
+    @NotNull
     @Column(name = "userid")
     private String userId;
 

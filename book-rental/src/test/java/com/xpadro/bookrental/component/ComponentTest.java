@@ -16,11 +16,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -41,7 +41,7 @@ public class ComponentTest {
 
     @Test
     public void shouldRentABook() throws Exception {
-        Rental newRental = new Rental("user_3", "2234567890123");
+        Rental newRental = new Rental("user_3", "1234567890124");
 
         MvcResult mvcResult = mockMvc.perform(post("/rentals")
                 .content(objectMapper.writeValueAsString(newRental))
@@ -51,18 +51,33 @@ public class ComponentTest {
 
         assertThat(mvcResult.getResponse().getHeader("location"), equalTo("http://localhost/rentals/user_3"));
 
-        Optional<Rental> savedRental = rentalRepository.findByUserId("user_3");
+        List<Rental> userRentals = rentalRepository.findByUserId("user_3");
 
-        if (!savedRental.isPresent()) {
-            fail("rental should be saved");
-        } else {
-            assertThat(savedRental.get().getUserId(), equalTo(newRental.getUserId()));
-        }
+        assertThat(userRentals.size(), equalTo(1));
+        assertThat(userRentals.get(0).getUserId(), equalTo(newRental.getUserId()));
     }
 
     @Test
-    public void shouldNotRentABookIfUserAlreadyRented() throws Exception {
-        Rental newRental = new Rental("user_1", "3234567890123");
+    public void userShouldBeAbleToRentMultipleBooks() throws Exception {
+        Rental newRental = new Rental("user_1", "1234567890125");
+
+        MvcResult mvcResult = mockMvc.perform(post("/rentals")
+                .content(objectMapper.writeValueAsString(newRental))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getHeader("location"), equalTo("http://localhost/rentals/user_1"));
+
+        List<Rental> userRentals = rentalRepository.findByUserId("user_1");
+
+        assertThat(userRentals.size(), equalTo(2));
+        assertTrue(userRentals.stream().anyMatch(rental -> rental.getIsbn().equals("1234567890125")));
+    }
+
+    @Test
+    public void userShouldNotRentAnAlreadyRentedBook() throws Exception {
+        Rental newRental = new Rental("user_1", "1234567890122");
 
         mockMvc.perform(post("/rentals")
                 .content(objectMapper.writeValueAsString(newRental))
@@ -78,15 +93,21 @@ public class ComponentTest {
                 .andReturn();
 
         String contentAsString = result.getResponse().getContentAsString();
-        Rental rental = objectMapper.readValue(contentAsString, Rental.class);
+        Rental[] userRentals = objectMapper.readValue(contentAsString, Rental[].class);
 
-        assertThat(rental.getUserId(), equalTo("user_1"));
+        assertThat(userRentals[0].getUserId(), equalTo("user_1"));
     }
 
     @Test
     public void shouldNotFindAnUnExistingRental() throws Exception {
-        mockMvc.perform(get("/rentals/user_9")
+        MvcResult result = mockMvc.perform(get("/rentals/user_9")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String contentAsString = result.getResponse().getContentAsString();
+        Rental[] userRentals = objectMapper.readValue(contentAsString, Rental[].class);
+
+        assertThat(userRentals.length, equalTo(0));
     }
 }

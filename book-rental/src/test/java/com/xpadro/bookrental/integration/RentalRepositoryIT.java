@@ -1,7 +1,7 @@
 package com.xpadro.bookrental.integration;
 
+import com.xpadro.bookrental.BookAlreadyRentedException;
 import com.xpadro.bookrental.BookRentalApplication;
-import com.xpadro.bookrental.UserAlreadyRentedException;
 import com.xpadro.bookrental.entity.Rental;
 import com.xpadro.bookrental.repository.RentalRepository;
 import org.junit.ClassRule;
@@ -17,11 +17,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MySQLContainerProvider;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(initializers = RentalRepositoryIT.Initializer.class)
@@ -55,7 +55,7 @@ public class RentalRepositoryIT {
     @Test
     public void shouldRentABook() {
         Rental rental = new Rental("user_3", "1234567890125");
-        Rental result = repository.save(rental);
+        Rental result = repository.rent(rental);
 
         assertThat(result.getIsbn(), equalTo("1234567890125"));
         assertThat(result.getUserId(), equalTo("user_3"));
@@ -64,24 +64,33 @@ public class RentalRepositoryIT {
         assertTrue(savedRental.isPresent());
     }
 
-    @Test(expected = UserAlreadyRentedException.class)
-    public void shouldNotRentABookIfUserAlreadyRented() {
-        Rental rental = new Rental("user_1", "1234567890126");
+    @Test(expected = BookAlreadyRentedException.class)
+    public void shouldNotRentABookIfAlreadyRented() {
+        Rental rental = new Rental("user_4", "1234567890121");
         repository.rent(rental);
     }
 
     @Test
-    public void shouldFindTheRequestedRental() {
-        Optional<Rental> result = repository.findByUserId("user_1");
+    public void userShouldBeAbleToRentSeveralBooks() {
+        Rental rental = new Rental("user_1", "1234567890126");
+        Rental result = repository.rent(rental);
 
-        assertTrue(result.isPresent());
+        assertThat(result.getIsbn(), equalTo("1234567890126"));
+        assertThat(result.getUserId(), equalTo("user_1"));
+    }
+
+    @Test
+    public void shouldFindTheRequestedRental() {
+        List<Rental> result = repository.findByUserId("user_2");
+
+        assertThat(result.size(), equalTo(2));
     }
 
     @Test
     public void shouldNotFindAnUnExistingRental() {
-        Optional<Rental> result = repository.findByUserId("user_9");
+        List<Rental> result = repository.findByUserId("user_9");
 
-        assertFalse(result.isPresent());
+        assertTrue(result.isEmpty());
     }
 
 }

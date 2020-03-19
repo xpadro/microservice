@@ -4,11 +4,11 @@ import com.xpadro.bookrental.entity.Rental;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface RentalRepository extends CrudRepository<Rental, Long>,  RentalRepositoryCustom {
 
-    Optional<Rental> findByUserId(String userId);
+    List<Rental> findByUserId(String userId);
 
 }
