@@ -27,9 +27,9 @@ public class BookController {
         return bookService.findAll();
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Book> getBook(@PathVariable Long id) {
-        return ResponseEntity.ok(bookService.find(id));
+    @GetMapping(value = "/{isbn}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Book> getBook(@PathVariable String isbn) {
+        return ResponseEntity.ok(bookService.find(isbn));
     }
 
     @PostMapping()
@@ -39,7 +39,7 @@ public class BookController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedBook.getId())
+                .buildAndExpand(savedBook.getIsbn())
                 .toUri();
 
         return ResponseEntity.created(location).build();

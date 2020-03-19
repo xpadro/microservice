@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -41,7 +40,7 @@ public class ComponentTest {
 
     @Test
     public void shouldReturnTheRequestedBook() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/books/1"))
+        MvcResult mvcResult = mockMvc.perform(get("/books/1234567890123"))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -72,9 +71,9 @@ public class ComponentTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getHeader("location"), equalTo("http://localhost/books/4"));
+        assertThat(mvcResult.getResponse().getHeader("location"), equalTo("http://localhost/books/1234567890126"));
 
-        Optional<Book> savedBook = bookRepository.findById(4L);
+        Optional<Book> savedBook = bookRepository.findByIsbn("1234567890126");
         if (!savedBook.isPresent()) {
             fail("book should be saved");
         } else {

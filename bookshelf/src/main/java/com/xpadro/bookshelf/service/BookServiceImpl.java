@@ -23,14 +23,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book find(Long id) {
-        Optional<Book> result = bookRepository.findById(id);
+    public Book find(String isbn) {
+        Optional<Book> result = bookRepository.findByIsbn(isbn);
 
         if (result.isPresent()) {
             return result.get();
         }
 
-        throw new BookNotFoundException(String.format("Book with Id %d not found", id));
+        throw new BookNotFoundException(String.format("Book with Isbn %s not found", isbn));
     }
 
     @Override

@@ -7,7 +7,7 @@ import java.util.List;
 public interface BookService {
     List<Book> findAll();
 
-    Book find(Long id);
+    Book find(String isbn);
 
     Book save(Book book);
 }

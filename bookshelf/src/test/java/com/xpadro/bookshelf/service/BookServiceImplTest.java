@@ -40,18 +40,19 @@ class BookServiceImplTest {
 
     @Test
     void shouldReturnTheRequestedBookIfFound() {
-        when(bookRepository.findById(1L)).thenReturn(Optional.of(new Book(BOOK_TITLE, 2020, "an author", "1234567890123")));
+        when(bookRepository.findByIsbn("1234567890123"))
+                .thenReturn(Optional.of(new Book(BOOK_TITLE, 2020, "an author", "1234567890123")));
 
-        Book result = bookService.find(1L);
+        Book result = bookService.find("1234567890123");
 
         assertThat(result.getTitle(), equalTo(BOOK_TITLE));
     }
 
     @Test
     void shouldRaiseExceptionIfNotFound() {
-        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
+        when(bookRepository.findByIsbn("1234567890123")).thenReturn(Optional.empty());
 
-        assertThrows(BookNotFoundException.class, () -> bookService.find(1L));
+        assertThrows(BookNotFoundException.class, () -> bookService.find("1234567890123"));
     }
 
     @Test
