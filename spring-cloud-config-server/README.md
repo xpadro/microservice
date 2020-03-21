@@ -1,4 +1,5 @@
 # Spring Cloud Config Server
 
 Bookshelf service properties:
-http://localhost:8888/bookshelf-service/default
+Default environment: http://localhost:8888/bookshelf-service/default
+Dev environment: http://localhost:8888/bookshelf-service/dev
