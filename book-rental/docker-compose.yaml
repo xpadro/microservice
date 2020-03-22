@@ -9,7 +9,7 @@ services:
     container_name: bookrental
 
     ports:
-      - "8081:8080"
+      - "8081:8081"
 
     depends_on:
       - mysql_service
