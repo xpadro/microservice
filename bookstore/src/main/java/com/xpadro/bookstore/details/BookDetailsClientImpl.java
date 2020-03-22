@@ -27,11 +27,10 @@ public class BookDetailsClientImpl implements BookDetailsClient {
 
     @Override
     public Optional<BookDetails> getBook(String isbn) {
-        String url = String.format(serviceUrl, isbn);
         BookDetails bookDetails;
 
         try {
-            ResponseEntity<BookDetails> response = restTemplate.getForEntity(url, BookDetails.class);
+            ResponseEntity<BookDetails> response = restTemplate.getForEntity(serviceUrl, BookDetails.class, isbn);
             bookDetails = response.getBody();
         } catch (Exception e) {
             logger.warn(String.format("Book with isbn %s not retrieved. Error: %s", isbn, e.getMessage()));

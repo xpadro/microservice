@@ -26,8 +26,7 @@ public class BookRentalClientImpl implements BookRentalClient {
 
     @Override
     public List<BookRental> getUserRentals(String userId) {
-        String url = String.format(serviceUrl, userId);
-        ResponseEntity<BookRental[]> response = restTemplate.getForEntity(url, BookRental[].class);
+        ResponseEntity<BookRental[]> response = restTemplate.getForEntity(serviceUrl, BookRental[].class, userId);
         BookRental[] userRentals = response.getBody();
 
         return userRentals != null ? asList(userRentals) : emptyList();
