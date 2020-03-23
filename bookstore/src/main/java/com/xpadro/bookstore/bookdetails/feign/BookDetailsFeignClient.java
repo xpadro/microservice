@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "bookshelf-service", url = "http://localhost:8082")
+@FeignClient(name = "bookshelf-service")
 public interface BookDetailsFeignClient {
 
     @GetMapping(value = "/books/{isbn}", produces = MediaType.APPLICATION_JSON_VALUE)
