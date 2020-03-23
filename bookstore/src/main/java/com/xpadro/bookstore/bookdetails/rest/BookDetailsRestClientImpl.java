@@ -1,6 +1,6 @@
-package com.xpadro.bookstore.details;
+package com.xpadro.bookstore.bookdetails.rest;
 
-import com.xpadro.bookstore.entity.BookDetails;
+import com.xpadro.bookstore.bookdetails.BookDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
 
 @Service
-public class BookDetailsClientImpl implements BookDetailsClient {
-    private static final Logger logger = LoggerFactory.getLogger(BookDetailsClientImpl.class);
+public class BookDetailsRestClientImpl implements BookDetailsRestClient {
+    private static final Logger logger = LoggerFactory.getLogger(BookDetailsRestClientImpl.class);
 
     @Value("${book.details.url}")
     private String serviceUrl;
@@ -21,7 +21,7 @@ public class BookDetailsClientImpl implements BookDetailsClient {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public BookDetailsClientImpl(RestTemplate restTemplate) {
+    public BookDetailsRestClientImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

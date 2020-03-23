@@ -1,11 +1,9 @@
 package com.xpadro.bookstore;
 
-import com.xpadro.bookstore.details.BookDetailsClient;
-import com.xpadro.bookstore.entity.BookDetails;
-import com.xpadro.bookstore.entity.BookRental;
-import com.xpadro.bookstore.rental.BookDetailsFeignClient;
-import com.xpadro.bookstore.rental.BookRentalClient;
-import com.xpadro.bookstore.rental.BookRentalFeignClient;
+import com.xpadro.bookstore.bookdetails.BookDetails;
+import com.xpadro.bookstore.bookdetails.feign.BookDetailsFeignClient;
+import com.xpadro.bookstore.bookrental.BookRental;
+import com.xpadro.bookstore.bookrental.feign.BookRentalFeignClient;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,38 +20,20 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 @RestController
-@RequestMapping(value = "/store")
-public class BookStoreController {
-    private final Logger logger = LoggerFactory.getLogger(BookStoreController.class);
-
-    private final BookRentalClient rentalClient;
-    private final BookDetailsClient bookClient;
+@RequestMapping(value = "/store/feign")
+public class BookStoreFeignController {
+    private final Logger logger = LoggerFactory.getLogger(BookStoreFeignController.class);
 
     private final BookRentalFeignClient rentalFeignClient;
     private final BookDetailsFeignClient detailsFeignClient;
 
     @Autowired
-    public BookStoreController(BookRentalClient rentalClient, BookDetailsClient bookClient, BookRentalFeignClient rentalFeignClient, BookDetailsFeignClient detailsFeignClient) {
-        this.rentalClient = rentalClient;
-        this.bookClient = bookClient;
+    public BookStoreFeignController(BookRentalFeignClient rentalFeignClient, BookDetailsFeignClient detailsFeignClient) {
         this.rentalFeignClient = rentalFeignClient;
         this.detailsFeignClient = detailsFeignClient;
     }
 
     @GetMapping("/users/{userId}/books")
-    public ResponseEntity<List<BookDetails>> getUserBooks(@PathVariable String userId) {
-        List<BookRental> userRentals = rentalClient.getUserRentals(userId);
-
-        List<BookDetails> books = userRentals.stream()
-                .map(rental -> bookClient.getBook(rental.getIsbn()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(toList());
-
-        return ResponseEntity.ok(books);
-    }
-
-    @GetMapping("/feign/users/{userId}/books")
     public ResponseEntity<List<BookDetails>> getUserBooksWithFeign(@PathVariable String userId) {
         List<BookRental> userRentals = rentalFeignClient.findUserRentals(userId);
 

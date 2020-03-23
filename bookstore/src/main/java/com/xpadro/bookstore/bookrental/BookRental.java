@@ -1,4 +1,4 @@
-package com.xpadro.bookstore.entity;
+package com.xpadro.bookstore.bookrental;
 
 public class BookRental {
     private String isbn;

@@ -1,6 +1,6 @@
-package com.xpadro.bookstore.rental;
+package com.xpadro.bookstore.bookrental.rest;
 
-import com.xpadro.bookstore.entity.BookRental;
+import com.xpadro.bookstore.bookrental.BookRental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +13,14 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 @Service
-public class BookRentalClientImpl implements BookRentalClient {
+public class BookRentalRestClientImpl implements BookRentalRestClient {
     @Value("${book.rental.url}")
     private String serviceUrl;
 
     private final RestTemplate restTemplate;
 
     @Autowired
-    public BookRentalClientImpl(RestTemplate restTemplate) {
+    public BookRentalRestClientImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

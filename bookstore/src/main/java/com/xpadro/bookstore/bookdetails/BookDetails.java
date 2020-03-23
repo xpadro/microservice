@@ -1,4 +1,4 @@
-package com.xpadro.bookstore.entity;
+package com.xpadro.bookstore.bookdetails;
 
 public class BookDetails {
     private String title;

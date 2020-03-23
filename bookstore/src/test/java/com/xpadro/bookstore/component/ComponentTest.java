@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.xpadro.bookstore.BookstoreApplication;
-import com.xpadro.bookstore.entity.BookDetails;
+import com.xpadro.bookstore.bookdetails.BookDetails;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
