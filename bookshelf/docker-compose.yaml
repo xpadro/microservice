@@ -22,6 +22,10 @@ services:
 
     command: mvn -f ./pom.xml clean spring-boot:run
 
+    networks:
+      - microservice-net
+      - internal
+
 
   mysql_service:
     image: mysql:8
@@ -41,5 +45,14 @@ services:
     volumes:
       - books_db:/var/lib/mysql
 
+    networks:
+      - internal
+
 volumes:
   books_db:
+
+networks:
+  microservice-net:
+    driver: bridge
+  internal:
+    driver: bridge
