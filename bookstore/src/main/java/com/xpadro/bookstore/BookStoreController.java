@@ -1,9 +1,9 @@
 package com.xpadro.bookstore;
 
 import com.xpadro.bookstore.bookdetails.BookDetails;
-import com.xpadro.bookstore.bookdetails.feign.BookDetailsFeignClient;
+import com.xpadro.bookstore.bookdetails.BookDetailsClient;
 import com.xpadro.bookstore.bookrental.BookRental;
-import com.xpadro.bookstore.bookrental.feign.BookRentalFeignClient;
+import com.xpadro.bookstore.bookrental.BookRentalClient;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +20,15 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 @RestController
-@RequestMapping(value = "/store/feign")
-public class BookStoreFeignController {
-    private final Logger logger = LoggerFactory.getLogger(BookStoreFeignController.class);
+@RequestMapping(value = "/store")
+public class BookStoreController {
+    private final Logger logger = LoggerFactory.getLogger(BookStoreController.class);
 
-    private final BookRentalFeignClient rentalFeignClient;
-    private final BookDetailsFeignClient detailsFeignClient;
+    private final BookRentalClient rentalFeignClient;
+    private final BookDetailsClient detailsFeignClient;
 
     @Autowired
-    public BookStoreFeignController(BookRentalFeignClient rentalFeignClient, BookDetailsFeignClient detailsFeignClient) {
+    public BookStoreController(BookRentalClient rentalFeignClient, BookDetailsClient detailsFeignClient) {
         this.rentalFeignClient = rentalFeignClient;
         this.detailsFeignClient = detailsFeignClient;
     }

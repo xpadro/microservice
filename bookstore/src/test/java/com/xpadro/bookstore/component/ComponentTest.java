@@ -2,16 +2,22 @@ package com.xpadro.bookstore.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.netflix.loadbalancer.Server;
+import com.netflix.loadbalancer.ServerList;
 import com.xpadro.bookstore.BookstoreApplication;
 import com.xpadro.bookstore.bookdetails.BookDetails;
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.cloud.netflix.ribbon.StaticServerList;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -26,16 +32,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = BookstoreApplication.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc
+@ContextConfiguration(classes = {ComponentTest.LocalRibbonClientConfiguration.class})
 public class ComponentTest {
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String JSON_TYPE = "application/json";
-    private static final int SERVICES_PORT = 8089;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Rule
-    public WireMockRule wireMockServer = new WireMockRule(wireMockConfig()
-            .port(SERVICES_PORT));
+    @ClassRule
+    public static WireMockClassRule wireMock = new WireMockClassRule(
+            wireMockConfig().dynamicPort());
 
 
     @Autowired
@@ -86,5 +92,13 @@ public class ComponentTest {
                 .willReturn(aResponse()
                         .withStatus(404)
                         .withHeader(CONTENT_TYPE_HEADER, JSON_TYPE)));
+    }
+
+    @TestConfiguration
+    public static class LocalRibbonClientConfiguration {
+        @Bean
+        public ServerList<Server> ribbonServerList() {
+            return new StaticServerList<>(new Server("localhost", wireMock.port()));
+        }
     }
 }

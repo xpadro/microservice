@@ -1,6 +1,5 @@
-package com.xpadro.bookstore.bookrental.feign;
+package com.xpadro.bookstore.bookrental;
 
-import com.xpadro.bookstore.bookrental.BookRental;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @FeignClient(name = "book-rental-service")
-public interface BookRentalFeignClient {
+public interface BookRentalClient {
 
     @GetMapping(value = "/rentals/{userId}")
     List<BookRental> findUserRentals(@PathVariable String userId);
