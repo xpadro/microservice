@@ -1,0 +1,123 @@
+version: '3'
+
+services:
+  bookshelf-service:
+    build:
+      context: .
+      dockerfile: ./bookshelf/Dockerfile
+
+    container_name: bookshelf
+
+    ports:
+      - "8082:8082"
+
+    depends_on:
+      - bookshelf-db
+
+    # Avoids having to download all dependencies every time
+    volumes:
+      - ~/.m2:/root/.m2
+
+    working_dir: /app/bookshelf
+
+    command: mvn -f ./pom.xml clean spring-boot:run
+
+    networks:
+      - bookstore-net
+      - db-net
+
+
+  book-rental-service:
+    build:
+      context: .
+      dockerfile: ./book-rental/Dockerfile
+
+    container_name: bookrental
+
+    ports:
+      - "8081:8081"
+
+    depends_on:
+      - bookrental-db
+
+    # Avoids having to download all dependencies every time
+    volumes:
+      - ~/.m2:/root/.m2
+
+    working_dir: /app/book-rental
+
+    command: mvn -f ./pom.xml clean spring-boot:run
+
+    networks:
+      - bookstore-net
+      - db-net
+
+
+  bookstore-service:
+    build:
+      context: .
+      dockerfile: ./bookstore/Dockerfile
+
+    container_name: bookstore
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - book-rental-service
+      - bookshelf-service
+
+    # Avoids having to download all dependencies every time
+    volumes:
+      - ~/.m2:/root/.m2
+
+    command: spring-boot:run
+
+    networks:
+      - bookstore-net
+
+
+  bookshelf-db:
+    image: mysql:8
+    container_name: bookshelf_db
+    restart: always
+
+    environment:
+      MYSQL_DATABASE: 'booksdb'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+
+    ports:
+      - "3306"
+
+    volumes:
+      - books_db:/var/lib/mysql
+
+    networks:
+      - db-net
+
+  bookrental-db:
+    image: mysql:8
+    container_name: bookrental_db
+    restart: always
+
+    environment:
+      MYSQL_DATABASE: 'rentalsdb'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+
+    ports:
+      - "3307"
+
+    volumes:
+      - booksrental_db:/var/lib/mysql
+
+volumes:
+  books_db:
+  booksrental_db:
+
+networks:
+  bookstore-net:
+    external: true
+  db-net:
+    driver: bridge
