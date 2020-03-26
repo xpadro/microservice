@@ -1,6 +1,47 @@
 version: '3'
 
 services:
+  config-server:
+    build:
+      context: .
+      dockerfile: ./spring-cloud-config-server/Dockerfile
+
+    container_name: config-server
+
+    ports:
+      - "8888:8888"
+
+    # Avoids having to download all dependencies every time
+    volumes:
+      - ~/.m2:/root/.m2
+
+    command: spring-boot:run
+
+    networks:
+      - bookstore-net
+
+  naming-server:
+    build:
+      context: .
+      dockerfile: ./eureka-naming-server/Dockerfile
+
+    container_name: naming-server
+
+    ports:
+      - "8761:8761"
+
+    depends_on:
+      - config-server
+
+    # Avoids having to download all dependencies every time
+    volumes:
+      - ~/.m2:/root/.m2
+
+    command: spring-boot:run
+
+    networks:
+      - bookstore-net
+
   bookshelf-service:
     build:
       context: .
@@ -13,6 +54,8 @@ services:
 
     depends_on:
       - bookshelf-db
+      - config-server
+      - naming-server
 
     # Avoids having to download all dependencies every time
     volumes:
@@ -39,6 +82,8 @@ services:
 
     depends_on:
       - bookrental-db
+      - config-server
+      - naming-server
 
     # Avoids having to download all dependencies every time
     volumes:
@@ -66,6 +111,8 @@ services:
     depends_on:
       - book-rental-service
       - bookshelf-service
+      - config-server
+      - naming-server
 
     # Avoids having to download all dependencies every time
     volumes:
