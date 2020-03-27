@@ -2,7 +2,7 @@ FROM openjdk:8-jdk
 
 VOLUME /tmp
 
-ARG JAR_FILE=./target/*.jar
+ARG JAR_FILE=./api-gateway/target/*.jar
 COPY ${JAR_FILE} app.jar
 
 EXPOSE 8765

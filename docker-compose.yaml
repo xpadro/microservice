@@ -42,6 +42,30 @@ services:
     networks:
       - bookstore-net
 
+
+  api-gateway-service:
+    build:
+      context: .
+      dockerfile: ./api-gateway/Dockerfile
+
+    container_name: api-gateway
+
+    ports:
+      - "8765:8765"
+
+    depends_on:
+      - naming-server
+
+    # Avoids having to download all dependencies every time
+    volumes:
+      - ~/.m2:/root/.m2
+
+    command: spring-boot:run
+
+    networks:
+      - bookstore-net
+
+
   bookshelf-service:
     build:
       context: .
