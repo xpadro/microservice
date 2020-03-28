@@ -1,5 +1,6 @@
 package com.xpadro.apigateway;
 
+import brave.sampler.Sampler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -19,5 +20,10 @@ public class ApiGatewayApplication {
 	@Bean
 	public LoggingFilter loggingFilter() {
 		return new LoggingFilter();
+	}
+
+	@Bean
+	public Sampler sampler() {
+		return Sampler.ALWAYS_SAMPLE;
 	}
 }

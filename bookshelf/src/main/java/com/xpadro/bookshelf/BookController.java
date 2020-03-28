@@ -2,6 +2,8 @@ package com.xpadro.bookshelf;
 
 import com.xpadro.bookshelf.entity.Book;
 import com.xpadro.bookshelf.service.BookService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/books")
 public class BookController {
+    private static final Logger logger = LoggerFactory.getLogger(BookController.class);
+
     private final BookService bookService;
 
     @Autowired
@@ -29,6 +33,7 @@ public class BookController {
 
     @GetMapping(value = "/{isbn}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Book> getBook(@PathVariable String isbn) {
+        logger.info("Requested book with isbn {}", isbn);
         return ResponseEntity.ok(bookService.find(isbn));
     }
 
